@@ -59,6 +59,6 @@ extern "C" __declspec(dllexport) void obs_module_unload() {
 	if (dock) dock->stop();
 	const auto remove = api<void(*)(const char *)>("obs_frontend_remove_dock");
 	if (dock && registered && remove) remove(DockId);
-	else delete dock.data();
+	if (dock) delete dock.data();
 	dock = nullptr; registered = false;
 }
