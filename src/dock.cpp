@@ -14,6 +14,7 @@
 QString LaunchDock::text(const QString &key) const {
 	static const QMap<QString, std::array<QString, 3>> copy = {
 		{"auto", {"Запускать вместе с OBS", "Запускати разом з OBS", "Start with OBS"}},
+		{"tray", {"Запускать в трей", "Запускати у трей", "Start in system tray"}},
 		{"detected", {"Автопоиск", "Автопошук", "Auto-detected"}},
 		{"manual", {"Выбран вручную", "Вибрано вручну", "Manual selection"}},
 		{"browse", {"Выбрать EXE", "Вибрати EXE", "Choose EXE"}},
@@ -48,7 +49,7 @@ LaunchDock::LaunchDock(const QString &profile, const QString &locale, bool previ
 	layout->setSpacing(12);
 	setMinimumWidth(280);
 	auto *heading = new QHBoxLayout;
-	auto *title = new QLabel("Launch Desk <small>0.1.0</small>");
+	auto *title = new QLabel("Launch Desk <small>0.1.1</small>");
 	heading->addWidget(title, 1);
 	languages = new QComboBox;
 	languages->setObjectName("language");
@@ -71,6 +72,11 @@ LaunchDock::LaunchDock(const QString &profile, const QString &locale, bool previ
 		row.enabled->setChecked(entry.enabled);
 		row.enabled->setEnabled(valid);
 		section->addWidget(row.enabled);
+		row.inTray = new QCheckBox;
+		row.inTray->setObjectName(entry.id + "-tray");
+		row.inTray->setChecked(entry.inTray);
+		row.inTray->setEnabled(valid);
+		section->addWidget(row.inTray);
 		row.path = new QLineEdit(entry.path);
 		row.path->setObjectName(entry.id + "-path");
 		row.path->setReadOnly(true);
@@ -102,6 +108,7 @@ LaunchDock::LaunchDock(const QString &profile, const QString &locale, bool previ
 		layout->addLayout(section);
 		if (index == 0) { auto *line = new QFrame; line->setFrameShape(QFrame::HLine); layout->addWidget(line); }
 		connect(row.enabled, &QCheckBox::toggled, this, [this, index](bool value) { apps[index].enabled = value; persist(); });
+		connect(row.inTray, &QCheckBox::toggled, this, [this, index](bool value) { apps[index].inTray = value; persist(); });
 		connect(row.browse, &QPushButton::clicked, this, [this, index] {
 			const auto selected = QFileDialog::getOpenFileName(this, text("browse"), QFileInfo(apps[index].path).absolutePath(), apps[index].exe + " (" + apps[index].exe + ")");
 			if (selected.isEmpty()) return;
@@ -132,7 +139,7 @@ void LaunchDock::persist() {
 	if (!saveConfig(file, apps, language)) {
 		valid = false;
 		notice->setText(text("saveError")); notice->show();
-		for (auto &row : rows) { row.enabled->setEnabled(false); row.browse->setEnabled(false); row.detect->setEnabled(false); row.launch->setEnabled(false); }
+		for (auto &row : rows) { row.enabled->setEnabled(false); row.inTray->setEnabled(false); row.browse->setEnabled(false); row.detect->setEnabled(false); row.launch->setEnabled(false); }
 	}
 }
 
@@ -142,6 +149,7 @@ void LaunchDock::refresh() {
 	for (int i = 0; i < rows.size(); ++i) {
 		auto &row = rows[i];
 		row.enabled->setText(text("auto"));
+		row.inTray->setText(text("tray"));
 		row.path->setText(apps[i].path); row.path->setCursorPosition(0); row.path->setToolTip(apps[i].path);
 		row.path->setAccessibleName(apps[i].name + " EXE");
 		row.mode->setText(text(apps[i].automatic ? "detected" : "manual"));

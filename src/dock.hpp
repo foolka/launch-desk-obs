@@ -18,7 +18,7 @@ public:
 	QString text(const QString &key) const;
 private:
 	struct Row {
-		QCheckBox *enabled;
+		QCheckBox *enabled, *inTray;
 		QLabel *mode, *status;
 		QLineEdit *path;
 		QPushButton *browse, *detect, *launch;

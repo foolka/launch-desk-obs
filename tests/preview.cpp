@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 	LaunchDock dock("", args.value(1, "en"), true);
 	dock.setAttribute(Qt::WA_DontShowOnScreen);
 	dock.setWindowTitle("Launch Desk OBS");
-	dock.resize(440, 400);
+	dock.resize(440, 460);
 	dock.show();
 	QTimer::singleShot(100, &app, [&] {
 		const auto path = args.value(2);

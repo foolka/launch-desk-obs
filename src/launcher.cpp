@@ -84,7 +84,8 @@ bool loadConfig(const QString &file, QVector<AppEntry> &apps, QString &language)
 	QJsonParseError error;
 	const auto doc = QJsonDocument::fromJson(input.readAll(), &error);
 	const auto object = doc.object();
-	if (error.error != QJsonParseError::NoError || object.value("schema").toInt() != 1 || !object.value("apps").isArray()) return false;
+	const int schema = object.value("schema").toInt();
+	if (error.error != QJsonParseError::NoError || (schema != 1 && schema != 2) || !object.value("apps").isArray()) return false;
 	auto next = defaults();
 	const auto records = object.value("apps").toArray();
 	if (records.size() != next.size()) return false;
@@ -97,6 +98,8 @@ bool loadConfig(const QString &file, QVector<AppEntry> &apps, QString &language)
 			app.path = row.value("path").toString();
 			app.enabled = row.value("enabled").toBool();
 			app.automatic = row.value("automatic").toBool();
+			if (schema == 2 && !row.value("inTray").isBool()) return false;
+			app.inTray = schema == 1 ? app.id == "shoutout-desk" : row.value("inTray").toBool();
 			++matches;
 		}
 		if (matches != 1) return false;
@@ -112,9 +115,9 @@ bool loadConfig(const QString &file, QVector<AppEntry> &apps, QString &language)
 bool saveConfig(const QString &file, const QVector<AppEntry> &apps, const QString &language) {
 	if (!QDir().mkpath(QFileInfo(file).absolutePath())) return false;
 	QJsonArray rows;
-	for (const auto &app : apps) rows.append(QJsonObject{{"id", app.id}, {"path", app.path}, {"enabled", app.enabled}, {"automatic", app.automatic}});
+	for (const auto &app : apps) rows.append(QJsonObject{{"id", app.id}, {"path", app.path}, {"enabled", app.enabled}, {"automatic", app.automatic}, {"inTray", app.inTray}});
 	QSaveFile output(file);
-	const auto bytes = QJsonDocument(QJsonObject{{"schema", 1}, {"language", language}, {"apps", rows}}).toJson();
+	const auto bytes = QJsonDocument(QJsonObject{{"schema", 2}, {"language", language}, {"apps", rows}}).toJson();
 	return output.open(QIODevice::WriteOnly) && output.write(bytes) == bytes.size() && output.commit();
 }
 
@@ -186,6 +189,11 @@ static HRESULT launchThroughDesktop(const QString &path, const QString &argument
 	return hr;
 }
 
+// Explicit arguments override only this launch, never the application's saved preference.
+QString launchArguments(const AppEntry &entry) {
+	return entry.inTray ? "--start-tray" : "--start-window";
+}
+
 // A per-product mutex serializes launches across multiple OBS instances.
 QString startApp(const AppEntry &entry) {
 	if (!sameDesktopUser()) return "identity";
@@ -204,7 +212,7 @@ QString startApp(const AppEntry &entry) {
 		const HRESULT initialized = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 		if (FAILED(initialized) && initialized != RPC_E_CHANGED_MODE) result = "failed";
 		else {
-			const auto hr = launchThroughDesktop(entry.path, entry.id == "shoutout-desk" ? "--start-tray" : "");
+			const auto hr = launchThroughDesktop(entry.path, launchArguments(entry));
 			result = SUCCEEDED(hr) ? "starting" : "failed";
 			if (SUCCEEDED(hr)) {
 				for (int attempt = 0; attempt < 50; ++attempt) {

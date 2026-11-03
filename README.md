@@ -15,6 +15,7 @@ A small OBS dock that starts the standalone **Reward Desk** and **Shoutout Desk*
 3. Open OBS, then **Docks > Launch Desk**. Registered installations are detected automatically.
 4. For a portable or moved app, choose its **RewardDesk.exe** or **ShoutoutDesk.exe** using the folder button. Do not select the installer or an OBS plugin.
 5. Enable **Start with OBS** separately for each app. Initially both switches are off. Changes are saved immediately and take effect at the next OBS start. **Start now** launches without restarting OBS.
+6. Choose **Start in system tray** independently for each app. Checked opens only the tray icon; unchecked opens the normal window. Requires Reward Desk 0.10.2+ and Shoutout Desk 0.7.1+.
 
 ## Behavior
 
@@ -22,7 +23,7 @@ A small OBS dock that starts the standalone **Reward Desk** and **Shoutout Desk*
 - Checks running processes before launching; skips an existing instance or another copy of the same executable name.
 - Automatic paths are detected on each OBS start. Manually selected paths are preserved; moving a portable folder requires selecting its new EXE.
 - Uses the Windows Explorer desktop user, without requesting administrator rights for the apps. If OBS runs as a different Windows user, launching is blocked to avoid opening the wrong profile.
-- Shoutout Desk opens in its tray mode. Reward Desk currently opens its normal window.
+- Each app can start normally or in the system tray. The selection also applies to **Start now** and never hides an app that is already running. Old 0.1.0 settings retain their previous modes until you change them.
 - Does not close apps when OBS exits, restart crashed apps in a loop, alter scenes, or control streaming/recording.
 - RU / UK / EN switch instantly. The dock follows the OBS theme.
 - Status means the **process** is running, not that Twitch is connected or a browser source is working. Check those inside each app.
@@ -39,7 +40,7 @@ For an OBS ZIP distribution with `portable_mode.txt` enabled, copy only `launch-
 
 Install a newer EXE over the old version with OBS closed, or replace the DLL from ZIP. Settings are preserved. Uninstallation removes plugin files, not settings or app data.
 
-Installed OBS settings: `%LOCALAPPDATA%\Launch Desk OBS\settings.json`. Only executable paths, two enable switches, detection mode and UI language are stored. Writes are atomic. A damaged or unsupported configuration is preserved and disables autostart instead of resetting it. Back up this file before manually editing or replacing it.
+Installed OBS settings: `%LOCALAPPDATA%\Launch Desk OBS\settings.json`. Only executable paths, autostart/tray switches, detection mode and UI language are stored. Writes are atomic. A damaged or unsupported configuration is preserved and disables autostart instead of resetting it. Back up this file before manually editing or replacing it.
 
 No Twitch credentials, reward databases, chat records, analytics, telemetry, network listener or automatic update service. The plugin makes **no network requests**. All application profiles remain owned by their original apps.
 

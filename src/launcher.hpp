@@ -8,6 +8,7 @@ struct AppEntry {
 	QString path;
 	bool enabled = false;
 	bool automatic = true;
+	bool inTray = false;
 };
 
 QVector<AppEntry> defaults();
@@ -19,3 +20,4 @@ bool saveConfig(const QString &file, const QVector<AppEntry> &apps, const QStrin
 enum class ProcessState { Absent, Running, DifferentCopy, Unknown };
 ProcessState processState(const QString &path);
 QString startApp(const AppEntry &entry);
+QString launchArguments(const AppEntry &entry);

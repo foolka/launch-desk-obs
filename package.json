@@ -1,6 +1,6 @@
 {
   "name": "launch-desk-obs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "OBS dock that starts Reward Desk and Shoutout Desk with OBS",
   "license": "GPL-2.0-or-later",
