@@ -1,0 +1,18 @@
+name: Plugin checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/cache@v4
+        with:
+          path: .deps/qt6
+          key: obs-qt6-2025-07-11-x64
+      - run: npm run build
+      - run: npm test

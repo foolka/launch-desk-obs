@@ -1,0 +1,7 @@
+build/
+.deps/
+release/
+.local/
+node_modules/
+AGENTS.md
+*.user
