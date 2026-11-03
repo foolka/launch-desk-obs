@@ -30,5 +30,29 @@ int main(int argc, char **argv) {
 	unload();
 	if (widget() || QFile::exists(temp.path() + "/settings.json")) return 1;
 	std::cout << "Release DLL: exports, dock registration, default-off startup, repeated events, shutdown and no unsolicited writes passed\n";
+	if (qEnvironmentVariableIsSet("LAUNCH_DESK_PROCESS_TEST")) {
+		const auto target = temp.path() + "/RewardDesk.exe";
+		if (!QFile::copy(bin + "/launch-fixture.exe", target)) return 1;
+		if (processState(target) != ProcessState::Absent) { std::cerr << "Close only the test; a real Reward Desk is already running\n"; return 1; }
+		auto entries = defaults();
+		entries[0].path = target; entries[0].automatic = false; entries[0].enabled = true;
+		if (!saveConfig(temp.path() + "/settings.json", entries, "en")) return 1;
+		post(); event(26); event(26);
+		QTimer::singleShot(3000, &app, [&] {
+			if (processState(target) != ProcessState::Running) { unload(); app.exit(1); return; }
+			event(13); event(15); event(26);
+		});
+		QTimer::singleShot(8500, &app, [&] {
+			if (processState(target) != ProcessState::Absent) { unload(); app.exit(1); return; }
+			event(26);
+			QTimer::singleShot(2000, &app, [&] {
+				const bool absent = processState(target) == ProcessState::Absent;
+				event(17); unload();
+				std::cout << "Release DLL: enabled autostart through worker and no relaunch after fixture exit passed\n";
+				app.exit(absent ? 0 : 1);
+			});
+		});
+		return app.exec();
+	}
 	return 0;
 }
