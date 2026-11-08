@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QStyle>
 #include <QFrame>
+#include <QScrollArea>
 #include <QFileInfo>
 #include <QPointer>
 #include <QDir>
@@ -49,7 +50,7 @@ LaunchDock::LaunchDock(const QString &profile, const QString &locale, bool previ
 	layout->setSpacing(12);
 	setMinimumWidth(280);
 	auto *heading = new QHBoxLayout;
-	auto *title = new QLabel("Launch Desk <small>0.1.1</small>");
+	auto *title = new QLabel("Launch Desk <small>0.2.0</small>");
 	heading->addWidget(title, 1);
 	languages = new QComboBox;
 	languages->setObjectName("language");
@@ -57,6 +58,17 @@ LaunchDock::LaunchDock(const QString &profile, const QString &locale, bool previ
 	languages->setCurrentIndex(languages->findData(language));
 	heading->addWidget(languages);
 	layout->addLayout(heading);
+	auto *scroll = new QScrollArea;
+	scroll->setObjectName("apps-scroll");
+	scroll->setWidgetResizable(true);
+	scroll->setFrameShape(QFrame::NoFrame);
+	scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	auto *content = new QWidget;
+	auto *sections = new QVBoxLayout(content);
+	sections->setContentsMargins(0, 0, 4, 0);
+	sections->setSpacing(12);
+	scroll->setWidget(content);
+	layout->addWidget(scroll, 1);
 	for (int index = 0; index < apps.size(); ++index) {
 		auto &entry = apps[index];
 		if (entry.automatic) entry.path = demo ? "C:\\Users\\Streamer\\AppData\\Local\\Programs\\" + entry.name + "\\" + entry.exe : detectInstalled(entry);
@@ -92,6 +104,7 @@ LaunchDock::LaunchDock(const QString &profile, const QString &locale, bool previ
 		section->addLayout(pathRow);
 		auto *bottom = new QHBoxLayout;
 		row.mode = new QLabel;
+		row.mode->setWordWrap(true);
 		bottom->addWidget(row.mode, 1);
 		row.launch = new QPushButton;
 		row.launch->setObjectName(entry.id + "-launch");
@@ -105,8 +118,8 @@ LaunchDock::LaunchDock(const QString &profile, const QString &locale, bool previ
 		row.state = demo ? (index == 0 ? "running" : "ready") : entry.path.isEmpty() ? "missing" : "ready";
 		section->addWidget(row.status);
 		rows.append(row);
-		layout->addLayout(section);
-		if (index == 0) { auto *line = new QFrame; line->setFrameShape(QFrame::HLine); layout->addWidget(line); }
+		sections->addLayout(section);
+		if (index + 1 < apps.size()) { auto *line = new QFrame; line->setFrameShape(QFrame::HLine); sections->addWidget(line); }
 		connect(row.enabled, &QCheckBox::toggled, this, [this, index](bool value) { apps[index].enabled = value; persist(); });
 		connect(row.inTray, &QCheckBox::toggled, this, [this, index](bool value) { apps[index].inTray = value; persist(); });
 		connect(row.browse, &QPushButton::clicked, this, [this, index] {
@@ -122,11 +135,11 @@ LaunchDock::LaunchDock(const QString &profile, const QString &locale, bool previ
 		});
 		connect(row.launch, &QPushButton::clicked, this, [this, index] { launch(index); });
 	}
+	sections->addStretch();
 	notice = new QLabel;
 	notice->setWordWrap(true);
 	notice->setVisible(!valid);
 	layout->addWidget(notice);
-	layout->addStretch();
 	connect(languages, &QComboBox::currentIndexChanged, this, [this] { language = languages->currentData().toString(); persist(); refresh(); });
 	connect(&poll, &QTimer::timeout, this, [this] { status(); });
 	if (!demo) poll.start(5000);

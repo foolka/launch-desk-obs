@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0 - 2026-11-08
+
+- Add Dudos Desk with installed-app discovery, portable EXE selection and independent autostart/tray switches.
+- Preserve paths, startup modes and language from both previous settings formats; Dudos stays disabled until explicitly enabled.
+- Keep the language selector visible while the app list scrolls in short OBS docks.
+- Extend settings migration, executable validation, dock layout and release DLL tests; refresh all three localized screenshots and guides.
+
 ## 0.1.1 - 2026-11-03
 
 - Add a separate Start in system tray checkbox for each app, for both automatic and manual starts.

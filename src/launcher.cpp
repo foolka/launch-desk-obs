@@ -21,7 +21,8 @@ using Microsoft::WRL::ComPtr;
 QVector<AppEntry> defaults() {
 	return {
 		{"reward-desk", "Reward Desk", "RewardDesk.exe", "{C65EBA28-42E6-4D4C-A350-E4080559F1B2}_is1"},
-		{"shoutout-desk", "Shoutout Desk", "ShoutoutDesk.exe", "{AFC7E0E6-8D63-42B3-8A41-76C28D90E29B}_is1"}
+		{"shoutout-desk", "Shoutout Desk", "ShoutoutDesk.exe", "{AFC7E0E6-8D63-42B3-8A41-76C28D90E29B}_is1"},
+		{"dudos-desk", "Dudos Desk", "DudosDesk.exe", "{5431F79E-B94F-4474-8727-21426CCB251A}_is1"}
 	};
 }
 
@@ -85,11 +86,14 @@ bool loadConfig(const QString &file, QVector<AppEntry> &apps, QString &language)
 	const auto doc = QJsonDocument::fromJson(input.readAll(), &error);
 	const auto object = doc.object();
 	const int schema = object.value("schema").toInt();
-	if (error.error != QJsonParseError::NoError || (schema != 1 && schema != 2) || !object.value("apps").isArray()) return false;
+	if (error.error != QJsonParseError::NoError || (schema != 1 && schema != 2 && schema != 3) || !object.value("apps").isArray()) return false;
 	auto next = defaults();
 	const auto records = object.value("apps").toArray();
-	if (records.size() != next.size()) return false;
+	const int expectedCount = schema < 3 ? 2 : next.size();
+	if (records.size() != expectedCount) return false;
 	for (auto &app : next) {
+		// Older profiles predate Dudos; keep its default opt-out without rewriting the file.
+		if (schema < 3 && app.id == "dudos-desk") continue;
 		int matches = 0;
 		for (const auto value : records) {
 			const auto row = value.toObject();
@@ -98,7 +102,7 @@ bool loadConfig(const QString &file, QVector<AppEntry> &apps, QString &language)
 			app.path = row.value("path").toString();
 			app.enabled = row.value("enabled").toBool();
 			app.automatic = row.value("automatic").toBool();
-			if (schema == 2 && !row.value("inTray").isBool()) return false;
+			if (schema >= 2 && !row.value("inTray").isBool()) return false;
 			app.inTray = schema == 1 ? app.id == "shoutout-desk" : row.value("inTray").toBool();
 			++matches;
 		}
@@ -117,7 +121,7 @@ bool saveConfig(const QString &file, const QVector<AppEntry> &apps, const QStrin
 	QJsonArray rows;
 	for (const auto &app : apps) rows.append(QJsonObject{{"id", app.id}, {"path", app.path}, {"enabled", app.enabled}, {"automatic", app.automatic}, {"inTray", app.inTray}});
 	QSaveFile output(file);
-	const auto bytes = QJsonDocument(QJsonObject{{"schema", 2}, {"language", language}, {"apps", rows}}).toJson();
+	const auto bytes = QJsonDocument(QJsonObject{{"schema", 3}, {"language", language}, {"apps", rows}}).toJson();
 	return output.open(QIODevice::WriteOnly) && output.write(bytes) == bytes.size() && output.commit();
 }
 

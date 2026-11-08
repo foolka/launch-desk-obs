@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(launch-desk-obs VERSION 0.1.1 LANGUAGES CXX)
+project(launch-desk-obs VERSION 0.2.0 LANGUAGES CXX)
 if(NOT WIN32 OR NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
   message(FATAL_ERROR "Windows x64 is required")
 endif()
@@ -28,4 +28,4 @@ foreach(target launch-core launch-desk-obs launch-preview launch-tests launch-fi
 endforeach()
 enable_testing()
 add_test(NAME launcher COMMAND launch-tests)
-set_tests_properties(launcher PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=minimal")
+set_tests_properties(launcher PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=windows")

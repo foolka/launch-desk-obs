@@ -26,6 +26,8 @@ int main(int argc, char **argv) {
 	if (!load || !post || !unload || !event || !widget || !load()) return 1;
 	post();
 	if (!widget() || widget()->findChild<QCheckBox *>("reward-desk-enabled")->isChecked()) return 1;
+	const auto dudos = widget()->findChild<QCheckBox *>("dudos-desk-enabled");
+	if (!dudos || dudos->isChecked() || !widget()->findChild<QCheckBox *>("dudos-desk-tray")) return 1;
 	event(26); event(26); event(13); event(15); event(36);
 	unload();
 	if (widget() || QFile::exists(temp.path() + "/settings.json")) return 1;

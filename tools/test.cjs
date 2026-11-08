@@ -5,7 +5,8 @@ const qt = process.env.QT_SDK || path.join(root, '.deps/qt6');
 const env = environment();
 env.Path = path.join(qt, 'bin') + ';' + env.Path;
 env.QT_PLUGIN_PATH = path.join(qt, 'plugins');
-env.QT_QPA_PLATFORM = 'minimal';
+// Use Windows font metrics for layout checks; test widgets stay off screen.
+env.QT_QPA_PLATFORM = 'windows';
 run(path.join(root, 'build/Release/launch-tests.exe'), [], { env });
 run(path.join(root, 'build/Release/launch-host-tests.exe'), ['--launch-desk-test'], { env });
 env.QT_QPA_PLATFORM = 'windows';
