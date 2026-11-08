@@ -4,16 +4,16 @@
 
 **For streamers who often forget to start their apps before going live.**
 
-A small OBS dock that starts the standalone **Reward Desk**, **Shoutout Desk** and **Dudos Desk** apps when OBS opens. Windows 10/11 x64, OBS Studio 32+ with Qt 6.8+.
+A small OBS dock that starts the standalone **Reward Desk**, **Shoutout Desk**, **Dudos Desk** and **Command Desk** apps when OBS opens. Windows 10/11 x64, OBS Studio 32+ with Qt 6.8+.
 
 ![Launch Desk dock, demonstration paths](docs/screenshots/en.png)
 
 ## Setup
 
-1. Install the apps you need: Reward Desk, Shoutout Desk and/or [Dudos Desk](https://github.com/foolka/dudos-desk). Complete their initial setup normally. This plugin does not install or sign in to them.
+1. Install the apps you need: Reward Desk, Shoutout Desk, [Dudos Desk](https://github.com/foolka/dudos-desk) or [Command Desk](https://github.com/foolka/command-desk). Complete their initial setup normally. This plugin does not install or sign in to them.
 2. Close OBS completely. Download the EXE from [Releases](https://github.com/foolka/launch-desk-obs/releases) and install it. Setup never closes OBS or starts a stream.
 3. Open OBS, then **Docks > Launch Desk**. Registered installations are detected automatically.
-4. For a portable or moved app, choose its **RewardDesk.exe**, **ShoutoutDesk.exe** or **DudosDesk.exe** using the folder button. Do not select the installer or an OBS plugin.
+4. For a portable or moved app, choose its **RewardDesk.exe**, **ShoutoutDesk.exe**, **DudosDesk.exe** or **CommandDesk.exe** using the folder button. Do not select the installer or an OBS plugin.
 5. Enable **Start with OBS** separately for each app. Initially all switches are off. Changes are saved immediately and take effect at the next OBS start. **Start now** launches without restarting OBS.
 6. Choose **Start in system tray** independently for each app. Checked opens only the tray icon; unchecked opens the normal window. Use current app versions; Reward Desk requires 0.10.2+ and Shoutout Desk 0.7.1+.
 
@@ -26,7 +26,7 @@ A small OBS dock that starts the standalone **Reward Desk**, **Shoutout Desk** a
 - Each app can start normally or in the system tray. The selection also applies to **Start now** and never hides an app that is already running. Old 0.1.0 settings retain their previous modes until you change them.
 - Does not close apps when OBS exits, restart crashed apps in a loop, alter scenes, or control streaming/recording.
 - RU / UK / EN switch instantly. The dock follows the OBS theme.
-- The app list scrolls in short docks. Updating from 0.1.x preserves both existing apps and adds Dudos Desk with autostart off. Starting Dudos Desk does not activate an effect.
+- The app list scrolls in short docks. Updates preserve all existing paths, language and switches. New apps, including Command Desk in 0.3.0, always start with autostart off. Starting Dudos Desk does not activate an effect. Command Desk uses its own saved command switches.
 - Status means the **process** is running, not that Twitch is connected or a browser source is working. Check those inside each app.
 
 Use this with the **standalone desktop apps**, not with Reward Desk OBS / Shoutout Desk OBS. Do not run the standalone app and corresponding plugin for the same channel at once.

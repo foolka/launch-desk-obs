@@ -50,7 +50,7 @@ LaunchDock::LaunchDock(const QString &profile, const QString &locale, bool previ
 	layout->setSpacing(12);
 	setMinimumWidth(280);
 	auto *heading = new QHBoxLayout;
-	auto *title = new QLabel("Launch Desk <small>0.2.0</small>");
+	auto *title = new QLabel("Launch Desk <small>0.3.0</small>");
 	heading->addWidget(title, 1);
 	languages = new QComboBox;
 	languages->setObjectName("language");

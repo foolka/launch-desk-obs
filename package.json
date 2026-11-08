@@ -1,8 +1,8 @@
 {
   "name": "launch-desk-obs",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "OBS dock that starts Reward Desk, Shoutout Desk and Dudos Desk with OBS",
+  "description": "OBS dock that starts Reward Desk, Shoutout Desk, Dudos Desk and Command Desk with OBS",
   "license": "GPL-2.0-or-later",
   "scripts": {
     "build": "node tools/build.cjs",

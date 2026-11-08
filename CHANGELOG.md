@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0
+
+- Add Command Desk with automatic installation detection, manual portable EXE selection and independent normal/tray launch.
+- Preserve all settings from schemas 1, 2 and 3; the new app is always opted out until explicitly enabled.
+- Test four-app narrow layouts, configuration migration and independent launch modes; refresh screenshots and three-language documentation.
+
 ## 0.2.0 - 2026-11-08
 
 - Add Dudos Desk with installed-app discovery, portable EXE selection and independent autostart/tray switches.
