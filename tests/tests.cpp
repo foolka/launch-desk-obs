@@ -12,12 +12,15 @@
 #include <iostream>
 
 static int checks = 0;
+int customChecks(const QString &exe);
 static void check(bool value, const char *message) {
 	++checks;
 	if (!value) { std::cerr << "FAILED: " << message << '\n'; std::exit(1); }
 }
 int main(int argc, char **argv) {
+	qputenv("LAUNCH_DESK_OFFLINE_TEST", "1");
 	QApplication app(argc, argv);
+	app.setQuitOnLastWindowClosed(false);
 	app.setStyle("Fusion");
 	app.setFont(QFont("Segoe UI", 10));
 	QTemporaryDir temp;
@@ -53,7 +56,8 @@ int main(int argc, char **argv) {
 	QFile legacy(file);
 	check(legacy.open(QIODevice::ReadOnly), "read migration fixture");
 	auto legacyObject = QJsonDocument::fromJson(legacy.readAll()).object(); legacy.close();
-	check(legacyObject["schema"].toInt() == 4, "writes current schema");
+	check(legacyObject["schema"].toInt() == 5, "writes current schema");
+	legacyObject = QJsonObject{{"schema", 4}, {"language", legacyObject["language"]}, {"apps", legacyObject["profiles"].toArray().first().toObject()["apps"]}};
 	const auto currentObject = legacyObject;
 	legacyObject["schema"] = 1;
 	QJsonArray oldRows;
@@ -114,7 +118,7 @@ int main(int argc, char **argv) {
 	for (const auto failure : {"future", "missing", "duplicate", "unknown"}) {
 		auto invalid = currentObject;
 		auto rows = invalid["apps"].toArray();
-		if (QString(failure) == "future") invalid["schema"] = 5;
+		if (QString(failure) == "future") invalid["schema"] = 6;
 		if (QString(failure) == "missing") rows.removeLast();
 		if (QString(failure) == "duplicate") rows[2] = rows[0];
 		if (QString(failure) == "unknown") { auto row = rows[2].toObject(); row["id"] = "unknown-app"; rows[2] = row; }
@@ -156,7 +160,7 @@ int main(int argc, char **argv) {
 		check(dock.findChild<QLineEdit *>("command-desk-path")->isReadOnly(), "Command path is not a shell command");
 		scroll->ensureWidgetVisible(dock.findChild<QCheckBox *>("command-desk-tray")); app.processEvents();
 		check(scroll->verticalScrollBar()->value() > 0, "fourth app reachable by scrolling");
-		for (auto *button : dock.findChildren<QPushButton *>()) check(button->geometry().right() <= button->parentWidget()->width(), "narrow dock controls fit");
+		for (auto *button : dock.findChildren<QPushButton *>()) if (button->isVisible()) check(button->geometry().right() <= button->parentWidget()->width(), "narrow dock controls fit");
 		dock.beginSession(); dock.beginSession(); dock.stop();
 	}
 	// Optional real launch uses only the hidden test fixture, never a user's application.
@@ -172,6 +176,7 @@ int main(int argc, char **argv) {
 		while (processState(exe) != ProcessState::Absent && elapsed.elapsed() < 12000) QThread::msleep(100);
 		check(processState(exe) == ProcessState::Absent, "fixture exited normally");
 	}
+	checks += customChecks(exe);
 	std::cout << checks << " checks passed\n";
 	return 0;
 }

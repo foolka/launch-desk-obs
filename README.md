@@ -4,7 +4,7 @@
 
 **For streamers who often forget to start their apps before going live.**
 
-A small OBS dock that starts the standalone **Reward Desk**, **Shoutout Desk**, **Dudos Desk** and **Command Desk** apps when OBS opens. Windows 10/11 x64, OBS Studio 32+ with Qt 6.8+.
+A small OBS dock that starts desktop applications when OBS opens. Built-in discovery for **Reward Desk**, **Shoutout Desk**, **Dudos Desk** and **Command Desk**, custom programs and named startup sets. Windows 10/11 x64, OBS Studio 32+ with Qt 6.8+.
 
 ![Launch Desk dock, demonstration paths](docs/screenshots/en.png)
 
@@ -15,7 +15,13 @@ A small OBS dock that starts the standalone **Reward Desk**, **Shoutout Desk**, 
 3. Open OBS, then **Docks > Launch Desk**. Registered installations are detected automatically.
 4. For a portable or moved app, choose its **RewardDesk.exe**, **ShoutoutDesk.exe**, **DudosDesk.exe** or **CommandDesk.exe** using the folder button. Do not select the installer or an OBS plugin.
 5. Enable **Start with OBS** separately for each app. Initially all switches are off. Changes are saved immediately and take effect at the next OBS start. **Start now** launches without restarting OBS.
-6. Choose **Start in system tray** independently for each app. Checked opens only the tray icon; unchecked opens the normal window. Use current app versions; Reward Desk requires 0.10.2+ and Shoutout Desk 0.7.1+.
+6. Choose **Start in system tray** independently for each built-in app. Checked opens only the tray icon; unchecked opens the normal window. Use current app versions; Reward Desk requires 0.10.2+ and Shoutout Desk 0.7.1+.
+
+## Custom Apps and Startup Sets
+
+**Add application** accepts a local Windows EXE or a Windows shortcut pointing to an EXE. Shortcut arguments and working directory are imported; both can be edited. New entries are disabled until you enable **Start with OBS**. This is for installed desktop programs, not installers, URLs, scripts, network paths or Store shortcuts without an EXE. For custom apps, tray behavior is controlled by the app's own settings or documented arguments; no Desk-specific flags are added.
+
+Choose the startup set at the top. Its menu creates, duplicates, renames and deletes sets, for example Normal stream and VR. Up to 20 sets, each with up to 100 custom entries. The selected set is used at the next OBS start. Switching, adding or duplicating sets never launches or closes programs. Removing an entry/set does not uninstall anything. Deleting asks for confirmation; the final set cannot be deleted. Already running apps are still detected across sets.
 
 ## Behavior
 
@@ -41,9 +47,11 @@ For an OBS ZIP distribution with `portable_mode.txt` enabled, copy only `launch-
 
 Install a newer EXE over the old version with OBS closed, or replace the DLL from ZIP. Settings are preserved. Uninstallation removes plugin files, not settings or app data.
 
-Installed OBS settings: `%LOCALAPPDATA%\Launch Desk OBS\settings.json`. Only executable paths, autostart/tray switches, detection mode and UI language are stored. Writes are atomic. A damaged or unsupported configuration is preserved and disables autostart instead of resetting it. Back up this file before manually editing or replacing it.
+Installed OBS settings: `%LOCALAPPDATA%\Launch Desk OBS\settings.json`. Stores all sets, the active set, program paths, arguments, working directories, switches and UI language. Do not put passwords or tokens in arguments. All sets are saved atomically in one file. Versions 0.1–0.3 load into one Default set with their previous choices. Opening the panel does not rewrite the file; the first edit saves an immutable `settings.json.<hash>.bak` before migration. Later edits keep the previous valid document in `settings.json.previous.bak`. If a backup or write fails, existing data remains; damaged/future settings are not silently reset. Installed and portable OBS deliberately have separate profiles; copy a backed-up file explicitly if moving between them. A backup never automatically overwrites another nonempty profile.
 
-No Twitch credentials, reward databases, chat records, analytics, telemetry, network listener or automatic update service. The plugin makes **no network requests**. All application profiles remain owned by their original apps.
+The panel checks this product's latest stable GitHub Release 10 seconds after opening, then every 6 hours, or when you press the refresh icon in the header. A newer version displays a notice and an **Open release** button. It never downloads/runs an installer automatically or offers a downgrade from a newer local version. Network failures do not affect startup or saved data.
+
+The check sends an HTTPS request to `api.github.com` with the plugin version, not your sets or paths. No Twitch credentials, reward databases, chat records, analytics, telemetry or network listener. All application profiles remain owned by their original apps.
 
 Unsigned installer: Windows may show publisher/SmartScreen prompts. Verify the release source and SHA256; do not disable Windows security features. Other OBS UI plugins can affect docks; report your OBS version and reproduction steps without credentials.
 

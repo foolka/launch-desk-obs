@@ -64,9 +64,9 @@ ru.TargetInvalid=Необходимо использовать стандарт�
 uk.TargetInvalid=Потрібно використовувати стандартну папку встановлення плагіна.
 
 [Messages]
-en.FinishedLabel=Launch Desk OBS is installed.%n%nOpen OBS > Docks > Launch Desk. Check the paths and enable Start with OBS for each app.%n%nReward Desk, Shoutout Desk and Dudos Desk profiles have not been changed.
-ru.FinishedLabel=Launch Desk OBS установлен.%n%nОткройте OBS > Док-панели > Launch Desk. Проверьте пути и включите «Запускать вместе с OBS» для нужных приложений.%n%nПрофили Reward Desk, Shoutout Desk и Dudos Desk не изменены.
-uk.FinishedLabel=Launch Desk OBS установлено.%n%nВідкрийте OBS > Док-панелі > Launch Desk. Перевірте шляхи й увімкніть «Запускати разом з OBS» для потрібних програм.%n%nПрофілі Reward Desk, Shoutout Desk та Dudos Desk не змінено.
+en.FinishedLabel=Launch Desk OBS is installed.%n%nOpen OBS > Docks > Launch Desk. Select a startup set and enable Start with OBS for the apps you need.%n%nApplication profiles have not been changed.
+ru.FinishedLabel=Launch Desk OBS установлен.%n%nОткройте OBS > Док-панели > Launch Desk. Выберите набор и включите «Запускать вместе с OBS» для нужных приложений.%n%nПрофили запускаемых приложений не изменены.
+uk.FinishedLabel=Launch Desk OBS установлено.%n%nВідкрийте OBS > Док-панелі > Launch Desk. Оберіть набір і ввімкніть «Запускати разом з OBS» для потрібних програм.%n%nПрофілі програм не змінено.
 
 [Code]
 var

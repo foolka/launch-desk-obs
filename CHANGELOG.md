@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 - 2026-11-21
+
+- Add custom local desktop applications through EXE or Windows shortcuts, with independent arguments and working directories.
+- Create, clone, rename and delete named startup sets; only the selected set starts with OBS, never on selection or editing.
+- Notify about newer stable GitHub Releases with manual and periodic checks; never download installers automatically or offer a downgrade.
+- Preserve schemas 1–4 as one default set, retain all sets atomically, back up the old format and the previous valid file before writes, and refuse to overwrite damaged/future data.
+- Test custom dialogs, stable entry IDs after removal, independent cloned sets, migration backups, failed writes, shortcut imports and actual launch parameters.
+
 ## 0.3.0
 
 - Add Command Desk with automatic installation detection, manual portable EXE selection and independent normal/tray launch.

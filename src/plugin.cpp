@@ -29,7 +29,7 @@ static void event(int value, void *) {
 extern "C" __declspec(dllexport) void obs_module_set_pointer(void *) {}
 extern "C" __declspec(dllexport) uint32_t obs_module_ver() { return 32u << 24; }
 extern "C" __declspec(dllexport) const char *obs_module_name() { return "Launch Desk OBS"; }
-extern "C" __declspec(dllexport) const char *obs_module_description() { return "Start Reward Desk, Shoutout Desk, Dudos Desk and Command Desk with OBS."; }
+extern "C" __declspec(dllexport) const char *obs_module_description() { return "Start desktop applications with OBS using named startup sets."; }
 extern "C" __declspec(dllexport) const char *obs_module_author() { return "FermionaPlay"; }
 extern "C" __declspec(dllexport) void obs_module_set_locale(const char *value) { locale = QString::fromUtf8(value); }
 extern "C" __declspec(dllexport) bool obs_module_load() {
