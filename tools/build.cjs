@@ -32,7 +32,9 @@ async function build() {
 		const zip = path.join(root, '.deps/qt6.zip');
 		fs.writeFileSync(zip, bytes);
 		const quote = value => "'" + value.replaceAll("'", "''") + "'";
-		run('powershell.exe', ['-NoProfile', '-Command', `Expand-Archive -LiteralPath ${quote(zip)} -DestinationPath ${quote(qt)} -Force`]);
+		// A PowerShell 7 parent must not inject incompatible modules into Windows PowerShell.
+		run('powershell.exe', ['-NoProfile', '-Command', `$ErrorActionPreference='Stop'; $env:PSModulePath=Join-Path $PSHOME 'Modules'; Expand-Archive -LiteralPath ${quote(zip)} -DestinationPath ${quote(qt)} -Force`]);
+		if (!fs.existsSync(path.join(qt, 'lib/cmake/Qt6/Qt6Config.cmake'))) throw Error('Qt SDK extraction did not produce Qt6Config.cmake');
 	}
 	const generator = Number(vs.installationVersion.split('.')[0]) >= 17 ? 'Visual Studio 17 2022' : 'Visual Studio 16 2019';
 	run(cmake, ['-S', root, '-B', 'build', '-G', generator, '-A', 'x64', `-DCMAKE_PREFIX_PATH=${qt}`]);
